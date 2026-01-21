@@ -20,7 +20,7 @@ Then in the `prepare` function we need to prepare the object and also set the au
 
 WARNING \#1: Use the full path of the file so that the plugin always detects correctly the wave file. If it is not found, the processor will output silence\!
 
-WARNING \#2: Don’t use the setAudioFile in the process function\! It might try to process the file before loading it. This may cause unexpected behavior and even crash your plugin.
+WARNING \#2: Don’t use the `setAudioFile` in the process function\! It might try to process the file before loading it. This may cause unexpected behavior and even crash your plugin.
 
 WARNING \#3: If the wave file has more than one channel, it will only use the first (Left) channel
 
