@@ -67,6 +67,8 @@ public:
     float getFreq(){ return f0;};
     void setPhase(float newPhase){ phase = newPhase;};
     float getPhase(){ return phase;};
+    float setVolume(float newVolume){volume=newVolume;};
+    float getVolume(){return volume;};
     
 private:
 
