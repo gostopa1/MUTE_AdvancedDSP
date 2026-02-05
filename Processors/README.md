@@ -65,6 +65,12 @@ Filters:
   * `setQ(float newQ):` set new Q value for the filter  
   * `setGainDB(float newGainDB):` set amount of dBs to boost (positive number) or attenuate (negative number)  
 * `MuteDCFilter`: A DC blocking filter (first order high-pass with very low cutoff frequency). It has no parameters.
+* `IRConv`: A convolution processor to convolve with a monophonic impulse response.
+  * `loadIRFromWavFile(const juce::String& fullPath)`: set the path to the wave file for convolution. Pass a path as text, e.g. `/Users/myUser/myIRS/IR1.wav`  
+* `SchroederAllpass`: An schroeder based all pass filter [see here](https://ccrma.stanford.edu/~jos/pasp/Schroeder_Allpass_Sections.html).
+  * `setDelay(int M)`: sets the delay in samples
+  * `setGain`: sets the feedback gain for the all pass. Should be between -1 and 1 otherwise, it can cause weird behavior
+
 
 `Special classes:`
 
