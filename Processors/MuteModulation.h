@@ -48,12 +48,13 @@ public:
             float modulatedPos=modulator[i]*float(tapeLength-1);
             
             // To use the ring buffer, needs the "-1" to allow space for the linear interpolation
-            double readHeadf = fmod(writeHead - modulatedPos + (tapeLength-1), (tapeLength-1));
+            double readHeadf = fmod(writeHead - modulatedPos+tapeLength, tapeLength);
             
             readHead = int(readHeadf);
             double remainder = readHeadf - float(readHead);
-
-            buffer[i]=remainder*tape[readHead+1]+(1-remainder)*tape[readHead];
+            
+            int readhead_p1 = (readHead+1+tapeLength)%tapeLength;
+            buffer[i]=remainder*tape[readhead_p1]+(1-remainder)*tape[readHead];
             
             writeHead++;
             if (writeHead >= tapeLength)
