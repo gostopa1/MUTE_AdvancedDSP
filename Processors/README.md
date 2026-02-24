@@ -2,7 +2,10 @@
 
 * `MuteSine:` sine wave generator  
   * `setFreq(float newFreq):` set new frequency  
-  * `setPhase(float newFreq):` set new phase  
+  * `setPhase(float newFreq):` set new phase
+  * `setMin(float newMin):` set minimum value (default -1)
+  * `setMax(float newMax):` set maximum value (default +1)
+  * `setMinMax(float newMin, float newMax)`: setting both of the above in one go
 * `MuteCosine:` cosine wave generator  
   * `setFreq(float newFreq):` set new frequency  
   * `setPhase(float newFreq):` set new phase  
