@@ -15,8 +15,11 @@ class MuteSine
 {
 public:
     
+    float minvalue=-1.0;
+    float maxvalue=1.0;
     float phase=0;
     float phaseInc=0;
+    float tempValue=0;
 
     float fs=48000.0;
     float volume=1.0;
@@ -52,8 +55,8 @@ public:
             {
             phaseInc=2*M_PI*(f0*pow(2,modBuffer[sample]/12))/fs;
             }
-            
-            buffer[sample]=volume*sin(phase);
+            tempValue=(sin(phase)+1.0)/2.0*(maxvalue-minvalue)+minvalue;
+            buffer[sample]=volume*tempValue;
             phase+=phaseInc;
             if (phase>2*M_PI)
             {
@@ -69,6 +72,11 @@ public:
     float getPhase(){ return phase;};
     float setVolume(float newVolume){volume=newVolume;};
     float getVolume(){return volume;};
+    float setMinValue(float newMinValue){minvalue=newMinValue;};
+    float getMinValue(){return minvalue;};
+    float setMaxValue(float newMaxValue){maxvalue=newMaxValue;};
+    float getMaxValue(){return maxvalue;};
+    float setMinMaxValue(float newMinValue, float newMaxValue){minvalue=newMinValue; maxvalue=newMaxValue;};
     
 private:
 
