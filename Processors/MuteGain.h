@@ -21,6 +21,17 @@ public:
             buffer[sample] = buffer[sample]*gain;
         } 
     };
+
+    void process_multiple(float ** buffers, int numSamples, int numBuffers)
+    {
+        for (int i=0; i<numBuffers; ++i)
+        {
+            for (int sample=0;sample<numSamples;++sample)
+            {
+                buffers[i][sample] = buffers[i][sample]*gain;
+            }
+        }
+    };
 private:
     
 };
