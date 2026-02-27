@@ -60,11 +60,11 @@ public:
     void setAudioFile(juce::String filename)
     {
         // Juce related code to read an audio file as a buffer
-        //auto file = File("../../../Source/drums.wav"); // Set the file to load
-        //auto file = File("/Users/tanilas/Projects/DSP Applications/JUCE Projects/TestEffect/Source/drums.wav");
-        //auto file = File("/Users/tanilas/Projects/DSP Applications/JUCE Projects/TestEffect/Source/piano_melody.wav");
         auto file = File(filename);
-        formatManager.registerBasicFormats() ; // Tell to JUCE to look for all basic audio file formats
+        if (formatManager.getNumKnownFormats() == 0)
+        {
+            formatManager.registerBasicFormats() ; // Tell to JUCE to look for all basic audio file formats
+        }
         
         // Make a reader that will load the audio file
         std::unique_ptr<juce::AudioFormatReader> reader(formatManager.createReaderFor (file));
