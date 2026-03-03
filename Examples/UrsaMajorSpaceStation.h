@@ -197,7 +197,7 @@ public:
         z15.process(path15,numSamples);
         z16.process(path16,numSamples);
 
-        feedback.empty(feedback_path,numSamples);
+        empty_buffer(feedback_path,numSamples);
         mix_feedback.process(feedback_path, path1, numSamples);
         mix_feedback.process(feedback_path, path2, numSamples);
         mix_feedback.process(feedback_path, path3, numSamples);
@@ -226,7 +226,7 @@ public:
         do3.process(out_path3,numSamples);
         do4.process(out_path4,numSamples);
 
-        out1.empty(buffer,numSamples);        
+        empty_buffer(buffer,numSamples);
         mix_out.process(buffer, out_path1,numSamples);
         mix_out.process(buffer, out_path2,numSamples);
         mix_out.process(buffer, out_path3,numSamples);
@@ -234,9 +234,12 @@ public:
         mix_dry.process(buffer, dry_path,numSamples);
     }
 
-    void empty(float * buffer, int numSamples)
+    void empty_buffer(float * buffer, int numSamples)
     {
-
+        for (int i = 0; i < numSamples; i++)
+        {
+            buffer[i] = 0.0f;
+        }
     }   
 private:
    
