@@ -1,20 +1,15 @@
 #pragma once
 
-#include "MuteAudioPlayer.h"
-#include "IRConv.h"
 #include "MuteDelay.h"
-#include "MuteSplit.h"
-#include "MuteSine.h"
 #include "MuteMix.h"
-#include "SchroederAllpass.h"
+#include "ap1_mod.h"
 
 #define NUM_REVS 10
-
 class MuteSchroeder
 {
 public:
-    SchroederAllpass SchroederAllpass[NUM_REVS];
-    MuteAudioPlayer MuteAudioPlayer1;
+    ap1_mod ap1_mods[NUM_REVS];
+
     float gains[NUM_REVS] = {0.7, 0.7, 0.7};
     //int M[NUM_REVS] = {125,42,12};
     static constexpr int M[NUM_REVS] = {
@@ -36,24 +31,20 @@ public:
     
     void prepare(double sampleRate, int samplesPerBlock)
     {
-        MuteAudioPlayer1.setAudioFile("/Users/tan/Documents/MUTE/AdvancedDSP26/drums.wav");
-        MuteAudioPlayer1.prepare(sampleRate, samplesPerBlock);
         for (int i=0; i<NUM_REVS;++i)
-            {
-                SchroederAllpass[i].prepare(sampleRate, samplesPerBlock);
-                SchroederAllpass[i].setDelay(M[i]);
-                //SchroederAllpass[i].setGain(gains[i]);
-                SchroederAllpass[i].setGain(0.9);
-                SchroederAllpass[i].reset();
+            {   ap1_mods[i].setModOn(true);
+                ap1_mods[i].prepare(sampleRate, samplesPerBlock);
+                ap1_mods[i].setDelay(M[i]);
+                ap1_mods[i].setModAmount(M[i]/4);
+                ap1_mods[i].setGain(0.9);
+                ap1_mods[i].reset();
             }
-
     }
     void process(float * buffer, int numSamples)
     {
-        MuteAudioPlayer1.process(buffer, numSamples);
         for (int i=0; i<NUM_REVS;++i)
         {
-                SchroederAllpass[i].process(buffer, numSamples);
+                ap1_mods[i].process(buffer, numSamples);
         }
     }
     
