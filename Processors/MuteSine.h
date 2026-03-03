@@ -39,7 +39,8 @@ public:
     {
         for (int sample=0;sample<numSamples;++sample)
         {
-            buffer[sample]=volume*sin(phase);
+            tempValue=(sin(phase)+1.0)/2.0*(maxvalue-minvalue)+minvalue;
+            buffer[sample]=volume*tempValue;
             phase+=phaseInc;
             if (phase>2*M_PI)
             {
