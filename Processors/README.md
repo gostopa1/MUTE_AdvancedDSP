@@ -77,11 +77,17 @@ Filters:
 
 `Special classes:`
 
-* `MuteSplit:` making a copy of the signal for parallel signal processing  
+* `MuteSplit`: making a copy of the signal for parallel signal processing  
   * To use you need to get access to the copied buffer by adding the:  
     * `float * buffer2 = MuteSplit1.getPtr();`  
   * An example is here:  
-  * ![Image](../Tutorials/images/processors_image1.png)
+    `MuteSplit1.process(buffer,nuSamples);`
+    `float * buffer2 = MuteSplit1.getPtr();`
+* `LinkwitzRiley` : A cross-over filter (using biquad filters). It splits the input to a high and low component based on the cutoff frequency.
+  * the process function will split the signal; t
+  * `setCutoff(double Hz)`: The cutoff frequency for the 
+  * To access the high buffer the functionality is similar to `MuteSplit`:
+  * `float * highBuffer = LinkwitzRiley1.getHighBuffer();`
 
 `Complex processors (processors that use other existing processors)`
 
