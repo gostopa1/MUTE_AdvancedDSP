@@ -8,6 +8,8 @@ public:
     ap1_mod(){}
     ~ap1_mod(){}
 
+    float fs = 48000.0f;
+
     // Modulation parameters
     int modAmount=0; // Keeps track of the maximum modulation offset in samples
     double modValue=0.0; // Current modulation value between 0.0 and 1.0, which will be scaled to the modulation amount
@@ -22,7 +24,6 @@ public:
 
     bool modOn=true;
 
-
     void setModOn(bool on)
     {
         modOn=on;
@@ -30,6 +31,7 @@ public:
 
     void prepare(double sampleRate, int samplesPerBlock)
     {
+        fs = sampleRate;
         // For a Schroeder allpass, the delay is typically set to a small prime number of samples.
         // Here we choose 347 samples as an example, which corresponds to about 7.2 ms at 48 kHz.
         const std::size_t delaySamples = 347;
@@ -124,7 +126,7 @@ public:
         }
     }
 
-    void process_with_mod(float * buffer, float * modulator, int numSamples)
+    void process_delay_with_mod(float * buffer, float * modulator, int numSamples)
     {
         for (int sample=0;sample<numSamples;++sample)
         {
@@ -161,7 +163,44 @@ public:
         }
     }
 
+    void process_gain_with_mod(float * buffer, float * modulator, int numSamples)
+    {
+        for (int sample=0;sample<numSamples;++sample)
+        {
+
+            readIndex = idx_;
+
+            float x = buffer[sample];
+            const float x_del = xbuf_[readIndex]; // x[n-M]
+            const float y_del = ybuf_[readIndex]; // y[n-M]
+            
+            const float fc = minFrequency_ + modulator[sample] * (maxFrequency_ - minFrequency_);
+
+            // 1st-order allpass coefficient from target corner frequency
+            const float t = std::tan(static_cast<float>(M_PI) * fc / fs);
+            g_ = (1.0f - t) / (1.0f + t);
+
+            const float y = (-g_ * x) + x_del + (g_ * y_del);
+            // const float y = (-g_ * x) + x_del + (g_ * y_del);
+
+            xbuf_[idx_] = x;
+            ybuf_[idx_] = y;
+
+            idx_++;
+            if (idx_ >= delay_) idx_ = 0;
+
+            buffer[sample] = y;
+        }
+    }
+    void  setMinMaxFrequency(float minFreq, float maxFreq)
+    {
+        minFrequency_ = minFreq;
+        maxFrequency_ = maxFreq;
+    }
 private:
+
+    float maxFrequency_ = 3000.0f;
+    float minFrequency_ = 300.0f;
     std::vector<float> xbuf_, ybuf_;
     std::size_t delay_ = 1;
     std::size_t idx_ = 0;
