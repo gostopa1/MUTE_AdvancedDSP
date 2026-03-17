@@ -73,14 +73,15 @@ public:
         d2_2.setDelaySamples(int(125.0*sampleRate/1000.0));
 
         lp1.prepare(sampleRate, samplesPerBlock);
-        lp1.setCutoffHz(6000.0f);
+        float cutoff = 6000;
+        lp1.setCutoffHz(cutoff);
         lp2.prepare(sampleRate, samplesPerBlock);
-        lp2.setCutoffHz(6000.0f);
-        
+        lp2.setCutoffHz(cutoff);
+        float decay=1;
         gain_1_1.prepare(sampleRate, samplesPerBlock);
-        gain_1_1.setGain(0.7);
+        gain_1_1.setGain(decay);
         gain_2_1.prepare(sampleRate, samplesPerBlock);
-        gain_2_1.setGain(0.7);
+        gain_2_1.setGain(decay);
 
         do1.prepare(sampleRate, samplesPerBlock);
         do2.prepare(sampleRate, samplesPerBlock);
@@ -100,9 +101,9 @@ public:
         dry_split1.prepare(sampleRate, samplesPerBlock);
 
         output_gain.prepare(sampleRate, samplesPerBlock);
-        output_gain.setGain(0.1);
+        output_gain.setGain(0.05);
         empty_gain.prepare(sampleRate, samplesPerBlock);
-        empty_gain.setGain(0.0f);
+        empty_gain.setGain(0.05);
 
         s1.prepare(sampleRate, samplesPerBlock);
         s2.prepare(sampleRate, samplesPerBlock);
@@ -182,7 +183,6 @@ public:
         mix2.process(buffer, ds7.getPtr(), numSamples);
         output_gain.process(buffer,numSamples);
         mix1.process(buffer, dry_split1.getPtr(), numSamples);
-       
     }
     void empty(float * buffer, int numSamples)
     {
@@ -190,7 +190,18 @@ public:
         {
             buffer[sample] = 0.0f;
         }
-    }   
+    }
+    void setDecay(float newDecay)
+    {
+        gain_1_1.setGain(newDecay);
+        gain_2_1.setGain(newDecay);
+    }
+    
+    void setLowpass(float newCutoff)
+    {
+        lp1.setCutoffHz(newCutoff);
+        lp2.setCutoffHz(newCutoff);    
+    }
 private:
    
 };
