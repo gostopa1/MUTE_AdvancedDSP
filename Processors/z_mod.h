@@ -30,7 +30,6 @@ public:
     double modCoeff=0.99999; // Smoothing coefficient for the modulation
     int randomcnt=0.0;
     int randomInterval=4410; // Update modulation every 100ms at 44.1kHz
-    
 
     void setModOn(bool on)
     {
@@ -40,6 +39,10 @@ public:
     // Set delay in seconds (will be converted to samples using current sampleRate)
     void setDelaySamples(int delaySamples)
     {
+        if (delaySamples < 1)
+        {
+            delaySamples = 1; // Minimum delay of 1 sample to avoid issues with zero-length tape
+        }
         tape.resize(delaySamples, 0.0f);
         tapeLen = delaySamples;
         modAmount = 240;
