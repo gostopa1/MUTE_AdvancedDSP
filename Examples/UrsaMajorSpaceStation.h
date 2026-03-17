@@ -20,6 +20,7 @@ public:
     MuteMix mix1, mix_out, mix_feedback, mix_dry;
     MuteGain gain_feedback;
 
+    float early_reflections=0.7;
     UrsaMajorSpaceStation(){}
     ~UrsaMajorSpaceStation(){}
     float * path1=nullptr;
@@ -92,13 +93,13 @@ public:
         z16.setDelaySamples(int(247.0*sampleRate/1000.0));
         
         do1.prepare(sampleRate, samplesPerBlock);
-        do1.setDelaySamples(int(175.0*sampleRate/1000.0));
+        do1.setDelaySamples(int(early_reflections*175.0*sampleRate/1000.0));
         do2.prepare(sampleRate, samplesPerBlock);
-        do2.setDelaySamples(int(60.0*sampleRate/1000.0));
+        do2.setDelaySamples(int(early_reflections*60.0*sampleRate/1000.0));
         do3.prepare(sampleRate, samplesPerBlock);
-        do3.setDelaySamples(int(90.0*sampleRate/1000.0));
+        do3.setDelaySamples(int(early_reflections*90.0*sampleRate/1000.0));
         do4.prepare(sampleRate, samplesPerBlock);
-        do4.setDelaySamples(int(137.0*sampleRate/1000.0));
+        do4.setDelaySamples(int(early_reflections*137.0*sampleRate/1000.0));
         
         lp1.prepare(sampleRate, samplesPerBlock);
         lp1.setCutoffHz(6000.0f);
@@ -231,7 +232,8 @@ public:
         mix_out.process(buffer, out_path2,numSamples);
         mix_out.process(buffer, out_path3,numSamples);
         mix_out.process(buffer, out_path4,numSamples);
-        mix_dry.process(buffer, dry_path,numSamples);
+        //mix_dry.process(buffer, dry_path,numSamples);
+        
     }
 
     void empty_buffer(float * buffer, int numSamples)
@@ -240,7 +242,15 @@ public:
         {
             buffer[i] = 0.0f;
         }
-    }   
+    }
+    void setDecay(float newDecay)
+    {
+        gain_feedback.setGain(newDecay/8.0); // Because of the 16 parallel delay lines, we need to divide the decay by 16 to get the correct overall decay time for the reverb.
+    }
+    void setLowpass(float newCutoff)
+    {
+        lp1.setCutoffHz(newCutoff);
+    }
 private:
    
 };
