@@ -15,6 +15,7 @@ public:
     MuteGain gain_1_1, gain_2_1;
     MuteGain output_gain;
     MuteGain empty_gain;
+    MuteGain dry_gain;
     z_mod d1_1, d2_1, d1_2, d2_2;
     z_mod do1, do2, do3, do4, do5, do6, do7;
     LP1 lp1, lp2;
@@ -102,6 +103,10 @@ public:
 
         output_gain.prepare(sampleRate, samplesPerBlock);
         output_gain.setGain(0.05);
+
+        dry_gain.prepare(sampleRate, samplesPerBlock);
+        dry_gain.setGain(1);
+
         empty_gain.prepare(sampleRate, samplesPerBlock);
         empty_gain.setGain(0.05);
 
@@ -182,7 +187,10 @@ public:
         mix2.process(buffer, ds6.getPtr(), numSamples);
         mix2.process(buffer, ds7.getPtr(), numSamples);
         output_gain.process(buffer,numSamples);
-        mix1.process(buffer, dry_split1.getPtr(), numSamples);
+        
+        float * dry_buffer = dry_split1.getPtr(); // Get the dry buffer
+        dry_gain.process(dry_buffer, numSamples) // Aply gain
+        mix1.process(buffer, dry_buffer, numSamples); // Mix wet and dry
     }
     void empty(float * buffer, int numSamples)
     {
